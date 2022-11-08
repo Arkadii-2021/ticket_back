@@ -78,7 +78,7 @@ app.use(async (ctx, next) => {
 				ticketFull.splice(index, 1);
 				ticket.splice(index, 1);
             }		
-		    ctx.response.body = "Р—Р°РїРёСЃСЊ СѓРґР°Р»РµРЅР°";
+		    ctx.response.body = "Запись удалена";
 			
 			return;
 		
@@ -114,5 +114,5 @@ server.listen(port, (err) => {
 		 console.log(err);
 		 return;
 	 }
-	 console.log('РЎРµСЂРІРµСЂ Р·Р°РїСѓС‰РµРЅ, РїРѕСЂС‚: ' + port);
+	 console.log('Сервер запущен, порт: ' + port);
 })
