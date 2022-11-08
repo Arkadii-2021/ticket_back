@@ -41,7 +41,6 @@ app.use((ctx, next) => {
 	ctx.response.set('Access-Control-Allow-Origin', '*');
 	ctx.response.set('Access-Control-Allow-Methods', 'DELETE, PUT, PATCH, GET, POST');
 	ctx.response.status = 204;
-	console.log(ctx.request.body);
 	ctx.response.body = 'OK!';
 });
 
@@ -52,9 +51,6 @@ app.use((ctx, next) => {
 	}
 	
 	ctx.response.set('Access-Control-Allow-Origin', '*');
-	console.log(ctx.headers);
-	console.log(ctx.request.query);
-	console.log(ctx.request.body);
 	
 	let newTicketFull = JSON.parse(ctx.request.body);
 	newTicketFull.id = uuid.v4();
@@ -62,8 +58,6 @@ app.use((ctx, next) => {
 	let { description, ...fieldTicketNotFull } = newTicketFull;
 	ticketFull.push(newTicketFull);
 	ticket.push(fieldTicketNotFull);
-	console.log(ticketFull);
-	console.log(ticket);
 	ctx.response.body = newTicketFull;
 	next();
 });
@@ -75,7 +69,6 @@ app.use(async (ctx, next) => {
     switch (method) {
         case 'allTickets':
             ctx.response.body = ticket;
-			console.log(ctx.request.query);
             return;
 		case 'ticketById':
 		    const index = ticketFull.findIndex(n => n.id === ctx.request.query.id);
@@ -88,10 +81,8 @@ app.use(async (ctx, next) => {
 		case 'ticketStatus':
 		    const indexStatus = ticketFull.findIndex(n => n.id === ctx.request.query.id);
 			if (indexStatus !== -1) {
-				console.log(ticketFull[indexStatus].status);
 				ticketFull[indexStatus].status = true;
 				ticket[indexStatus].status = true;
-				console.log(ticketFull[indexStatus].status);
             }
 		    ctx.response.body = "Статус изменен";
 			return;		    
