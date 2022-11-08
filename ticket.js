@@ -65,7 +65,6 @@ app.use((ctx, next) => {
 	console.log(ticketFull);
 	console.log(ticket);
 	ctx.response.body = newTicketFull;
-	//ctx.body = `Request Body: ${JSON.stringify(ctx.request.body)}`;
 	next();
 });
 
@@ -84,10 +83,6 @@ app.use(async (ctx, next) => {
 				ticketFull.splice(index, 1);
 				ticket.splice(index, 1);
             }
-			//ticketFull = ticketFull.filter((i, index) => i.id != ctx.request.query.id);
-			//ticket = ticket.filter((i, index) => i.id != ctx.request.query.id);
-			//console.log(someTicket);
-			//console.log(ctx.request.query);
 		    ctx.response.body = "Запись удалена";
 			return;
 		case 'ticketStatus':
@@ -98,10 +93,6 @@ app.use(async (ctx, next) => {
 				ticket[indexStatus].status = true;
 				console.log(ticketFull[indexStatus].status);
             }
-			//ticketFull = ticketFull.filter((i, index) => i.id != ctx.request.query.id);
-			//ticket = ticket.filter((i, index) => i.id != ctx.request.query.id);
-			//console.log(someTicket);
-			console.log(ctx.request.query);
 		    ctx.response.body = "Статус изменен";
 			return;		    
     }
@@ -119,35 +110,3 @@ server.listen(port, (err) => {
 	 }
 	 console.log('Сервер запущен, порт: ' + port);
 })
-
-/* app.use((ctx, next) => {
-	if (ctx.request.method !== 'POST') {
-		next();
-		return;
-	}
-	console.log(ctx.headers);
-	console.log(ctx.request.query);
-	console.log(ctx.request.body);
-	ctx.response.set('Access-Control-Allow-Origin', '*');
-	ctx.response.body = 'OK!';
-	//ctx.body = `Request Body: ${JSON.stringify(ctx.request.body)}`;
-	next();
-}); */
-
-/* app.use((ctx, next) => {
-	if (ctx.request.method !== 'GET') {
-		next();
-		return;
-	}
-	ctx.response.set('Access-Control-Allow-Origin', '*');
-	console.log(ctx.request.query);
-	const { method, id } = ctx.request.query;
-	console.log(method, id);
-
-	ctx.response.body = ticket;
-
-	next();
-}); */
-
-//
-//let ticketId = uuid.v4();
