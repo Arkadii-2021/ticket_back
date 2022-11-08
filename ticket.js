@@ -51,7 +51,6 @@ app.use((ctx, next) => {
 	}
 	
 	ctx.response.set('Access-Control-Allow-Origin', '*');
-	
 	let newTicketFull = JSON.parse(ctx.request.body);
 	newTicketFull.id = uuid.v4();
 	newTicketFull.created = getDateTime();
@@ -67,37 +66,53 @@ app.use(async (ctx, next) => {
 	ctx.response.set('Access-Control-Allow-Origin', '*');
 
     switch (method) {
-        case 'allTickets':
+      
+		case 'allTickets':
             ctx.response.body = ticket;
-            return;
+            
+			return;
+		
 		case 'ticketById':
 		    const index = ticketFull.findIndex(n => n.id === ctx.request.query.id);
 			if (index !== -1) {
 				ticketFull.splice(index, 1);
 				ticket.splice(index, 1);
-            }
-		    ctx.response.body = "Запись удалена";
+            }		
+		    ctx.response.body = "Р—Р°РїРёСЃСЊ СѓРґР°Р»РµРЅР°";
+			
 			return;
+		
 		case 'ticketStatus':
 		    const indexStatus = ticketFull.findIndex(n => n.id === ctx.request.query.id);
 			if (indexStatus !== -1) {
 				ticketFull[indexStatus].status = true;
 				ticket[indexStatus].status = true;
             }
-		    ctx.response.body = "Статус изменен";
-			return;		    
+		
+		case 'ticketDescription':
+		    const indexDescription = ticketFull.findIndex(n => n.id === ctx.request.query.id);
+			ctx.response.body = ticketFull[indexDescription].description;
+			
+			return;	
+        case 'changeTicket':
+            const changeTicketFull = JSON.parse(ctx.request.body);
+			const indexForChangeTicket = ticketFull.findIndex(n => n.id === ctx.request.query.id);
+			ticketFull[indexForChangeTicket].name = changeTicketFull.name;
+			ticketFull[indexForChangeTicket].description = changeTicketFull.description;
+			ticket[indexForChangeTicket].name = changeTicketFull.name;
+			ticket[indexForChangeTicket].description = changeTicketFull.description;
     }
 	next();
 });
 
 const server = http.createServer(app.callback());
  
-const port = 7020;
+const port = 7010;
  
 server.listen(port, (err) => {
 	 if (err) {
 		 console.log(err);
 		 return;
 	 }
-	 console.log('Сервер запущен, порт: ' + port);
+	 console.log('РЎРµСЂРІРµСЂ Р·Р°РїСѓС‰РµРЅ, РїРѕСЂС‚: ' + port);
 })
