@@ -97,10 +97,10 @@ app.use(async (ctx, next) => {
         case 'changeTicket':
             const changeTicketFull = JSON.parse(ctx.request.body);
 			const indexForChangeTicket = ticketFull.findIndex(n => n.id === ctx.request.query.id);
-			ticketFull[indexForChangeTicket].name = changeTicketFull.name;
+/* 			ticketFull[indexForChangeTicket].name = changeTicketFull.name;
 			ticketFull[indexForChangeTicket].description = changeTicketFull.description;
 			ticket[indexForChangeTicket].name = changeTicketFull.name;
-			ticket[indexForChangeTicket].description = changeTicketFull.description;
+			ticket[indexForChangeTicket].description = changeTicketFull.description; */
     }
 	next();
 });
