@@ -26,7 +26,6 @@ function getDateTime() {
     return `${date}.${month + 1}.${year} ${hours}:${minutes}`;
 };
 
-
 app.use(koaBody({
 	urlencoded: true,
 	multipart: true,
@@ -49,15 +48,19 @@ app.use((ctx, next) => {
 		next();
 		return;
 	}
-	
 	ctx.response.set('Access-Control-Allow-Origin', '*');
-	let newTicketFull = JSON.parse(ctx.request.body);
-	newTicketFull.id = uuid.v4();
-	newTicketFull.created = getDateTime();
-	let { description, ...fieldTicketNotFull } = newTicketFull;
-	ticketFull.push(newTicketFull);
-	ticket.push(fieldTicketNotFull);
-	ctx.response.body = newTicketFull;
+	if (ctx.request.query.method === 'changeTicket') {
+		console.log(ctx.request.body);
+		ctx.response.body = newTicketFull;
+	} else {
+		let newTicketFull = JSON.parse(ctx.request.body);
+		newTicketFull.id = uuid.v4();
+		newTicketFull.created = getDateTime();
+		let { description, ...fieldTicketNotFull } = newTicketFull;
+		ticketFull.push(newTicketFull);
+		ticket.push(fieldTicketNotFull);
+		ctx.response.body = newTicketFull;		
+	}
 	next();
 });
 
@@ -92,15 +95,8 @@ app.use(async (ctx, next) => {
 		case 'ticketDescription':
 		    const indexDescription = ticketFull.findIndex(n => n.id === ctx.request.query.id);
 			ctx.response.body = ticketFull[indexDescription].description;
-			
+
 			return;	
-        case 'changeTicket':
-            const changeTicketFull = JSON.parse(ctx.request.body);
-			const indexForChangeTicket = ticketFull.findIndex(n => n.id === ctx.request.query.id);
-/* 			ticketFull[indexForChangeTicket].name = changeTicketFull.name;
-			ticketFull[indexForChangeTicket].description = changeTicketFull.description;
-			ticket[indexForChangeTicket].name = changeTicketFull.name;
-			ticket[indexForChangeTicket].description = changeTicketFull.description; */
     }
 	next();
 });
