@@ -52,7 +52,13 @@ app.use((ctx, next) => {
 	if (ctx.request.query.method === 'changeTicket') {
 		console.log(ctx.request.body);
 		ctx.response.body = newTicketFull;
-	} else {
+		tickets[tickets.findIndex(item=>item.id == ctx.request.body.id)].name = ctx.request.body.name;
+        tickets[tickets.findIndex(item=>item.id == ctx.request.body.id)].status = ctx.request.body.status;
+        ticketFull[ticketFull.findIndex(item=>item.id == ctx.request.body.id)].name = ctx.request.body.name;
+        ticketFull[ticketFull.findIndex(item=>item.id == ctx.request.body.id)].status = ctx.request.body.status;
+        ticketFull[ticketFull.findIndex(item=>item.id == ctx.request.body.id)].description = ctx.request.body.description;
+		ctx.response.body = 'Запись исправлена';
+	} else if (ctx.request.query.method === 'createTicket') {
 		let newTicketFull = JSON.parse(ctx.request.body);
 		newTicketFull.id = uuid.v4();
 		newTicketFull.created = getDateTime();
@@ -80,7 +86,8 @@ app.use(async (ctx, next) => {
 			if (index !== -1) {
 				ticketFull.splice(index, 1);
 				ticket.splice(index, 1);
-            }		
+            }	
+			
 		    ctx.response.body = "Запись удалена";
 			
 			return;
@@ -103,7 +110,7 @@ app.use(async (ctx, next) => {
 
 const server = http.createServer(app.callback());
  
-const port = 7010;
+const port = 7030;
  
 server.listen(port, (err) => {
 	 if (err) {
