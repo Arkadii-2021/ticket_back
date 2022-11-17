@@ -23,7 +23,7 @@ function getDateTime() {
 	let hours = timestamp.getHours();
 	let minutes = timestamp.getMinutes();
 	
-    return `${date}.${month + 1}.${year} ${hours}:${minutes}`;
+  return `${date}.${month + 1}.${year} ${hours}:${minutes}`;
 };
 
 app.use(koaBody({
@@ -50,19 +50,23 @@ app.use((ctx, next) => {
 	}
 	ctx.response.set('Access-Control-Allow-Origin', '*');
 	if (ctx.request.query.method === 'changeTicket') {
-		console.log(ctx.request.body);
-		ctx.response.body = newTicketFull;
-		tickets[tickets.findIndex(item=>item.id == ctx.request.body.id)].name = ctx.request.body.name;
-        tickets[tickets.findIndex(item=>item.id == ctx.request.body.id)].status = ctx.request.body.status;
-        ticketFull[ticketFull.findIndex(item=>item.id == ctx.request.body.id)].name = ctx.request.body.name;
-        ticketFull[ticketFull.findIndex(item=>item.id == ctx.request.body.id)].status = ctx.request.body.status;
-        ticketFull[ticketFull.findIndex(item=>item.id == ctx.request.body.id)].description = ctx.request.body.description;
-		ctx.response.body = 'Запись исправлена';
+      
+    let changeTicketFull = JSON.parse(ctx.request.body);
+		ticket[ticket.findIndex(item=>item.id == changeTicketFull.id)].name = changeTicketFull.name;
+    ticket[ticket.findIndex(item=>item.id == changeTicketFull.id)].status = changeTicketFull.status;
+    ticketFull[ticketFull.findIndex(item=>item.id == changeTicketFull.id)].name = changeTicketFull.name;
+    ticketFull[ticketFull.findIndex(item=>item.id == changeTicketFull.id)].status = changeTicketFull.status;
+    ticketFull[ticketFull.findIndex(item=>item.id == changeTicketFull.id)].description = changeTicketFull.description;
+    ticketFull[ticketFull.findIndex(item=>item.id == changeTicketFull.id)].created = getDateTime();
+		ctx.response.body = changeTicketFull;
+      
 	} else if (ctx.request.query.method === 'createTicket') {
-		let newTicketFull = JSON.parse(ctx.request.body);
+		
+    let newTicketFull = JSON.parse(ctx.request.body);
 		newTicketFull.id = uuid.v4();
 		newTicketFull.created = getDateTime();
-		let { description, ...fieldTicketNotFull } = newTicketFull;
+		
+    let { description, ...fieldTicketNotFull } = newTicketFull;
 		ticketFull.push(newTicketFull);
 		ticket.push(fieldTicketNotFull);
 		ctx.response.body = newTicketFull;		
@@ -71,40 +75,40 @@ app.use((ctx, next) => {
 });
 
 app.use(async (ctx, next) => {
-    const { method, id } = ctx.request.query;
+  const { method, id } = ctx.request.query;
 	ctx.response.set('Access-Control-Allow-Origin', '*');
 
-    switch (method) {
+  switch (method) {
       
-		case 'allTickets':
-            ctx.response.body = ticket;
+  case 'allTickets':
+    ctx.response.body = ticket;
             
-			return;
+	  return;
 		
-		case 'ticketById':
-		    const index = ticketFull.findIndex(n => n.id === ctx.request.query.id);
-			if (index !== -1) {
-				ticketFull.splice(index, 1);
-				ticket.splice(index, 1);
-            }	
+	case 'removeTicket':
+	  const index = ticketFull.findIndex(n => n.id === ctx.request.query.id);
+	  if (index !== -1) {
+			ticketFull.splice(index, 1);
+			ticket.splice(index, 1);
+      }	
 			
-		    ctx.response.body = "Запись удалена";
+	  ctx.response.body = "Запись удалена";
 			
-			return;
+		return;
 		
-		case 'ticketStatus':
-		    const indexStatus = ticketFull.findIndex(n => n.id === ctx.request.query.id);
-			if (indexStatus !== -1) {
-				ticketFull[indexStatus].status = true;
-				ticket[indexStatus].status = true;
-            }
+	case 'ticketStatus':
+	  const indexStatus = ticketFull.findIndex(n => n.id === ctx.request.query.id);
+	  if (indexStatus !== -1) {
+	   	ticketFull[indexStatus].status = true;
+			ticket[indexStatus].status = true;
+      }
 		
-		case 'ticketDescription':
-		    const indexDescription = ticketFull.findIndex(n => n.id === ctx.request.query.id);
-			ctx.response.body = ticketFull[indexDescription].description;
+	case 'ticketDescription':
+	  const indexDescription = ticketFull.findIndex(n => n.id === ctx.request.query.id);
+	  ctx.response.body = ticketFull[indexDescription].description;
 
-			return;	
-    }
+		return;	
+  }
 	next();
 });
 
@@ -113,9 +117,9 @@ const server = http.createServer(app.callback());
 const port = 7030;
  
 server.listen(port, (err) => {
-	 if (err) {
-		 console.log(err);
-		 return;
-	 }
-	 console.log('Сервер запущен, порт: ' + port);
+	if (err) {
+	  console.log(err);
+		return;
+	}
+	console.log('Сервер запущен, порт: ' + port);
 })
