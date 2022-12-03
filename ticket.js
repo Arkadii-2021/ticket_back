@@ -17,13 +17,24 @@ const ticketFull = [];
 
 function getDateTime() {
 	let timestamp = new Date();
-	let date = timestamp.getDate();
-	let month = timestamp.getMonth();
-	let year = timestamp.getFullYear();
-	let hours = timestamp.getHours();
-	let minutes = timestamp.getMinutes();
-	
-  return `${date}.${month + 1}.${year} ${hours}:${minutes}`;
+  
+  const getData = {
+    'date': timestamp.getDate().toString().length < 2 
+            ? timestamp.getDate().toString().padStart(2, '0') 
+            : timestamp.getDate(),
+    'month': timestamp.getMonth().toString().length < 2
+            ? timestamp.getMonth().toString().padStart(2, '0') 
+            : timestamp.getMonth(),
+    'year': timestamp.getFullYear(),
+	  'hours': timestamp.getHours().toString().length < 2
+            ? timestamp.getHours().toString().padStart(2, '0') 
+            : timestamp.getHours(),
+	  'minutes': timestamp.getMinutes().toString().length < 2
+            ? timestamp.getMinutes().toString().padStart(2, '0') 
+            : timestamp.getMinutes(),
+  };
+  
+  return `${getData.date}.${getData.month + 1}.${getData.year} ${getData.hours}:${getData.minutes}`;
 };
 
 app.use(koaBody({
@@ -121,5 +132,5 @@ server.listen(port, (err) => {
 	  console.log(err);
 		return;
 	}
-	console.log('Сервер запущен, порт: ' + port);
-})
+	console.log('Server started in port: ' + port);
+});
